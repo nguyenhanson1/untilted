@@ -39,13 +39,18 @@ void AUntitledPlayerController::RemovePauseMenu_Implementation()
 {
 	if (PauseMenu)
 	{
+		bPauseMenuVisible = false;
+
+		PauseMenu->SetVisibility(ESlateVisibility::Hidden);
+
 		FInputModeGameOnly InputModeGameOnly;
 
 		SetInputMode(InputModeGameOnly);
 
 		bShowMouseCursor = false;
 
-		bPauseMenuVisible = false;
+		
+		
 	}
 }
 
@@ -53,10 +58,10 @@ void AUntitledPlayerController::TogglePauseMenu()
 {
 	if (bPauseMenuVisible)
 	{
-		RemovePauseMenu();
+		RemovePauseMenu_Implementation();
 	}
 	else
 	{
-		DisplayPauseMenu();
+		DisplayPauseMenu_Implementation();
 	}
 }
