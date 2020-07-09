@@ -82,6 +82,8 @@ AUntitledCharacter::AUntitledCharacter()
 
 	// Uncomment the following line to turn motion controllers on by default:
 	//bUsingMotionControllers = true;
+
+	bInvisible = false;
 }
 
 void AUntitledCharacter::BeginPlay()
@@ -104,6 +106,8 @@ void AUntitledCharacter::BeginPlay()
 		Mesh1P->SetHiddenInGame(false, true);
 	}
 }
+
+
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -136,6 +140,31 @@ void AUntitledCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAxis("TurnRate", this, &AUntitledCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AUntitledCharacter::LookUpAtRate);
+}
+
+void AUntitledCharacter::Tick(float DeltaSeconds)
+{
+	if (GetVelocity().Size() == 0)
+	{
+		if (bInvisible) return;
+		TurnInvisible();
+	}
+	else
+	{
+		if (!bInvisible) return;
+		TurnVisible();
+	}
+}
+
+void AUntitledCharacter::TurnInvisible_Implementation()
+{
+	
+	bInvisible = true;
+}
+
+void AUntitledCharacter::TurnVisible_Implementation()
+{
+	bInvisible = false;
 }
 
 void AUntitledCharacter::OnFire()
@@ -269,6 +298,7 @@ void AUntitledCharacter::MoveRight(float Value)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
+		
 	}
 }
 

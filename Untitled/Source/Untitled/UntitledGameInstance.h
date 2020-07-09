@@ -27,20 +27,13 @@ public:
 	*	FString ServerName : Name of the server the player is hosting
 	*/
 	UFUNCTION(Exec)
-		void Host(FString ServerName);
+	void Host(FString ServerName);
 	/** Join Method call in console to join the server using the server index within in the ServerList
 	*	uint32 Index : The index of the ServerRow within ServerList
 	*/
 	UFUNCTION(Exec)
-		void Join(uint32 Index);
+	void Join(uint32 Index);
 	
-/**	Pause Menu*/
-	/** LoadPauseMenu method can be call in blueprint to add PauseMenu Widget on screen*/
-	UFUNCTION(BlueprintCallable, Category = "HUD")
-	void LoadPauseMenu();
-
-	
-
 /**	Main Menu*/
 	/** LoadMenu method can be call in blueprint to add MainMenu Widget on screen*/
 	UFUNCTION(BlueprintCallable, Category = "HUD")
@@ -59,7 +52,6 @@ public:
 private:
 	/** Widget Blueprint of MainMenu class*/
 	TSubclassOf<class UWidget_Base> MenuClass;
-	TSubclassOf<class UWidget_Base> PauseMenuClass;
 
 	/** Object of the MainMenu class */
 	class UMainMenu* Menu;

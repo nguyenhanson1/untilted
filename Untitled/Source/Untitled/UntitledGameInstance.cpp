@@ -10,7 +10,7 @@
 #include "OnlineSessionSettings.h"
 #include "Interfaces/OnlineSessionInterface.h"
 
-#include "Widgets/PauseMenu.h"
+
 #include "Widgets/MainMenu.h"
 #include "Widgets/Widget_Base.h"
 
@@ -22,9 +22,6 @@ UUntitledGameInstance::UUntitledGameInstance(const FObjectInitializer & ObjectIn
 	ConstructorHelpers::FClassFinder<UUserWidget> MenuBPClass(TEXT("/Game/Widget/W_MainMenu"));
 	if (!ensure(MenuBPClass.Class != nullptr)) return;
 	MenuClass = MenuBPClass.Class;
-	ConstructorHelpers::FClassFinder<UUserWidget> PauseMenuBPClass(TEXT("/Game/Widget/W_PauseMenu"));
-	if (!ensure(PauseMenuBPClass.Class != nullptr)) return;
-	PauseMenuClass = PauseMenuBPClass.Class;
 
 }
 
@@ -43,16 +40,6 @@ void UUntitledGameInstance::LoadMenu()
 
 }
 
-void UUntitledGameInstance::LoadPauseMenu()
-{
-	if (!ensure(PauseMenuClass != nullptr)) return;
-	PauseMenu = CreateWidget<UPauseMenu>(this, PauseMenuClass);
-
-	if (!ensure(PauseMenu != nullptr)) return;
-	PauseMenu->AddToViewport();
-	PauseMenu->SetVisibility(ESlateVisibility::Hidden);
-	PauseMenu->SetMenuInterface(this);
-}
 
 
 void UUntitledGameInstance::LoadMainMenu() {

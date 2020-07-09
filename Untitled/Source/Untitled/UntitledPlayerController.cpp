@@ -13,6 +13,9 @@ void AUntitledPlayerController::BeginPlay()
 		PauseMenu = CreateWidget<UPauseMenu>(this, WPauseMenu);
 		if (PauseMenu)
 		{
+			FInputModeGameOnly InputModeGameOnly;
+			
+			SetInputMode(InputModeGameOnly);
 			PauseMenu->AddToViewport();
 			PauseMenu->SetVisibility(ESlateVisibility::Hidden);
 		}
