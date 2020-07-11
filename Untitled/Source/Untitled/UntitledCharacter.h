@@ -51,9 +51,6 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class USceneComponent* VR_MuzzleLocation;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
-	class USoundCue* WalkingSound;
-
 protected:
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaSeconds);

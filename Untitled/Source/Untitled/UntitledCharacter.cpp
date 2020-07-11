@@ -12,6 +12,7 @@
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
 #include "Sound/SoundCue.h"
+#include "Engine/SkeletalMeshSocket.h"
 
 
 
@@ -148,7 +149,6 @@ void AUntitledCharacter::Tick(float DeltaSeconds)
 {
 	if (GetVelocity().Size() == 0)
 	{
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), WalkingSound, GetActorLocation());
 		if (bInvisible) return;
 		TurnInvisible();
 
