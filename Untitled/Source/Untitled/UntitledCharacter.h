@@ -32,15 +32,34 @@ public:
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FirstPersonCameraComponent;
+	class UCameraComponent* CameraComponent;
 
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Mesh)
 	class USkeletalMeshComponent* Mesh1P;
 
 	/** Gun mesh: 1st person view (seen only by self) */
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Mesh)
-	class AWeapon* FP_Gun;
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = Mesh )
+	class AWeapon* CurrentWeapon;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<AWeapon> StarterWeaponClass;
+
+	UPROPERTY(VisibleDefaultsOnly , Category = "Weapon")
+	FName WeaponAttachSocketName;
+
+	UPROPERTY(EditAnywhere)
+	UMaterialInterface* GunMaterial;
+
+	UPROPERTY(EditAnywhere)
+	UMaterialInterface* PlayerMaterial;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Material")
+	UMaterialInstanceDynamic* PlayerDynamicMaterial;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Material")
+	UMaterialInstanceDynamic* GunDynamicMaterial;
+
 
 protected:
 	virtual void BeginPlay();
@@ -140,7 +159,16 @@ public:
 	/** Returns Mesh1P subobject **/
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
-	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+	FORCEINLINE class UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 
+
+	virtual FVector GetPawnViewLocation() const override;
+
+	UFUNCTION()
+	void SetupInvisibleMaterial();
+
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerSetupInvisibleMaterial();
 };
 

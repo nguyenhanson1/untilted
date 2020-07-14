@@ -14,7 +14,7 @@
 #include "Sound/SoundCue.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Weapon.h"
-
+#include "Net/UnrealNetwork.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -32,10 +32,10 @@ AUntitledCharacter::AUntitledCharacter()
 	BaseLookUpRate = 45.f;
 
 	// Create a CameraComponent	
-	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
-	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	CameraComponent->SetupAttachment(GetCapsuleComponent());
+	CameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
+	CameraComponent->bUsePawnControlRotation = true;
 
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
@@ -48,16 +48,33 @@ AUntitledCharacter::AUntitledCharacter()
 	//bUsingMotionControllers = true;
 
 	bInvisible = false;
+
+	WeaponAttachSocketName = "GripPoint";
 }
 
 void AUntitledCharacter::BeginPlay()
 {
-	// Call the base class  
+	
 	Super::BeginPlay();
+	
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		FActorSpawnParameters SpawnParam;
+		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
-
-	// Show or hide the two versions of the gun based on whether or not we're using motion controllers.
+		CurrentWeapon = GetWorld()->SpawnActor<AWeapon>(StarterWeaponClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParam);
+		if (CurrentWeapon)
+		{
+			CurrentWeapon->SetOwner(this);
+			CurrentWeapon->AttachToComponent(Mesh1P, FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponAttachSocketName);
+		}
+		
+	}
+	SetupInvisibleMaterial();
+		
+		
+	
+	
 }
 
 
@@ -125,50 +142,7 @@ void AUntitledCharacter::TurnVisible_Implementation()
 
 void AUntitledCharacter::OnFire()
 {
-	//// try and fire a projectile
-	//if (ProjectileClass != NULL)
-	//{
-	//	UWorld* const World = GetWorld();
-	//	if (World != NULL)
-	//	{
-	//		if (bUsingMotionControllers)
-	//		{
-	//			const FRotator SpawnRotation = VR_MuzzleLocation->GetComponentRotation();
-	//			const FVector SpawnLocation = VR_MuzzleLocation->GetComponentLocation();
-	//			World->SpawnActor<AUntitledProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
-	//		}
-	//		else
-	//		{
-	//			const FRotator SpawnRotation = GetControlRotation();
-	//			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-	//			const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
-
-	//			//Set Spawn Collision Handling Override
-	//			FActorSpawnParameters ActorSpawnParams;
-	//			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-	//			// spawn the projectile at the muzzle
-	//			World->SpawnActor<AUntitledProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-	//		}
-	//	}
-	//}
-
-	//// try and play the sound if specified
-	//if (FireSound != NULL)
-	//{
-	//	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	//}
-
-	//// try and play a firing animation if specified
-	//if (FireAnimation != NULL)
-	//{
-	//	// Get the animation object for the arms mesh
-	//	UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-	//	if (AnimInstance != NULL)
-	//	{
-	//		AnimInstance->Montage_Play(FireAnimation, 1.f);
-	//	}
-	//}
+	CurrentWeapon->Fire();
 }
 
 void AUntitledCharacter::OnResetVR()
@@ -283,4 +257,57 @@ bool AUntitledCharacter::EnableTouchscreenMovement(class UInputComponent* Player
 	}
 	
 	return false;
+}
+
+FVector AUntitledCharacter::GetPawnViewLocation() const
+{
+	if (CameraComponent)
+	{
+		return CameraComponent->GetComponentLocation();
+	}
+
+	return Super::GetPawnViewLocation();
+}
+
+void AUntitledCharacter::SetupInvisibleMaterial()
+{
+	if (GetLocalRole() < ROLE_Authority)
+	{
+		ServerSetupInvisibleMaterial();
+	}
+
+	// Call the base class  
+	if (GunMaterial)
+	{
+		UMaterialInstanceDynamic* GunDynMaterial = UMaterialInstanceDynamic::Create(GunMaterial, CurrentWeapon);
+		GunDynamicMaterial = GunDynMaterial;
+		CurrentWeapon->SetDynMaterial(GunDynamicMaterial);
+	}
+
+	if (PlayerMaterial)
+	{
+		UMaterialInstanceDynamic* PlayerDynMaterial = UMaterialInstanceDynamic::Create(PlayerMaterial, this);
+		PlayerDynamicMaterial = PlayerDynMaterial;
+		Mesh1P->SetMaterial(0, PlayerDynamicMaterial);
+	}
+
+
+}
+
+void AUntitledCharacter::ServerSetupInvisibleMaterial_Implementation()
+{
+	SetupInvisibleMaterial();
+}
+
+bool AUntitledCharacter::ServerSetupInvisibleMaterial_Validate()
+{
+	return true;
+}
+
+void AUntitledCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AUntitledCharacter, CurrentWeapon);
+	//DOREPLIFETIME_CONDITION(AWeapon, HitScanTrace, COND_SkipOwner);
 }
