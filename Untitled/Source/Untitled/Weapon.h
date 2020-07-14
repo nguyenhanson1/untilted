@@ -36,13 +36,15 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerFire();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-	class USkeletalMeshComponent* MeshComp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon")
+	UMaterialInstanceDynamic* GunDynamicMaterial;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	class USkeletalMeshComponent* MeshComp;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<class UDamageType> DamageType;
@@ -65,6 +67,10 @@ protected:
 	UPROPERTY(ReplicatedUsing=OnRep_HitScanTrace)
 	FHitScanTrace HitScanTrace;
 
+	UPROPERTY(EditAnywhere, Category = "Weapon")
+	UMaterialInterface* GunMaterial;
+
+
 	UFUNCTION()
 	void OnRep_HitScanTrace();
 
@@ -77,5 +83,4 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetDynMaterial(UMaterialInterface* Material);
 };

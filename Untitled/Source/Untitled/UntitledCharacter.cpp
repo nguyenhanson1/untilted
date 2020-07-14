@@ -49,6 +49,7 @@ AUntitledCharacter::AUntitledCharacter()
 
 	bInvisible = false;
 	SetReplicates(true);
+	bReplicates = true;
 
 	WeaponAttachSocketName = "GripPoint";
 
@@ -59,9 +60,9 @@ AUntitledCharacter::AUntitledCharacter()
 void AUntitledCharacter::BeginPlay()
 {
 	
-	
-	
-	if (GetLocalRole() == ROLE_Authority)
+	Super::BeginPlay();
+
+	if (GetLocalRole() == ENetRole::ROLE_Authority)
 	{
 		FActorSpawnParameters SpawnParam;
 		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -72,13 +73,19 @@ void AUntitledCharacter::BeginPlay()
 			CurrentWeapon->SetOwner(this);
 			CurrentWeapon->AttachToComponent(Mesh1P, FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponAttachSocketName);
 		}
-
+		
 		
 	}
-	
-	SetupInvisibleMaterial();
+
+	if (PlayerMaterial)
+	{
+		UMaterialInstanceDynamic* PlayerDynMaterial = UMaterialInstanceDynamic::Create(PlayerMaterial, this);
+		PlayerDynamicMaterial = PlayerDynMaterial;
+		Mesh1P->SetMaterial(0, PlayerDynamicMaterial);
+	}
+
 		
-	Super::BeginPlay();
+
 	
 }
 
@@ -276,29 +283,13 @@ FVector AUntitledCharacter::GetPawnViewLocation() const
 
 void AUntitledCharacter::SetupInvisibleMaterial()
 {
-	if (GetLocalRole() < ROLE_Authority)
+	if (GetLocalRole() != ENetRole::ROLE_Authority)
 	{
 		ServerSetupInvisibleMaterial();
 	}
 
-	// Call the base class  
-	if (GunMaterial)
-	{
-		UMaterialInstanceDynamic* GunDynMaterial = UMaterialInstanceDynamic::Create(GunMaterial, CurrentWeapon);
-		GunDynamicMaterial = GunDynMaterial;
-		if (CurrentWeapon)
-		{
-			CurrentWeapon->SetDynMaterial(GunDynamicMaterial);
-		}
-		
-	}
 
-	if (PlayerMaterial)
-	{
-		UMaterialInstanceDynamic* PlayerDynMaterial = UMaterialInstanceDynamic::Create(PlayerMaterial, this);
-		PlayerDynamicMaterial = PlayerDynMaterial;
-		Mesh1P->SetMaterial(0, PlayerDynamicMaterial);
-	}
+
 
 
 }
@@ -317,6 +308,4 @@ void AUntitledCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AUntitledCharacter, CurrentWeapon);
-
-	//DOREPLIFETIME_CONDITION(AWeapon, HitScanTrace, COND_SkipOwner);
 }

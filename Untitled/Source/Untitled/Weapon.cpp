@@ -34,7 +34,14 @@ AWeapon::AWeapon()
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	// Call the base class  
+	if (GunMaterial)
+	{
+		UMaterialInstanceDynamic* GunDynMaterial = UMaterialInstanceDynamic::Create(GunMaterial, this);
+		GunDynamicMaterial = GunDynMaterial;
+		MeshComp->SetMaterial(0,GunDynamicMaterial);
+
+	}
 }
 
 
@@ -46,20 +53,12 @@ void AWeapon::Tick(float DeltaTime)
 
 }
 
-void AWeapon::SetDynMaterial(UMaterialInterface * Material)
-{
-	if (Material)
-	{
-		MeshComp->SetMaterial(0, Material);
-	}
-	
-}
 
 void AWeapon::Fire()
 {
 	// Trace the world from pawn eyes to crosshair location
 
-	if (GetLocalRole() < ROLE_Authority)
+	if (GetLocalRole() != ENetRole::ROLE_Authority)
 	{
 		ServerFire();
 	}

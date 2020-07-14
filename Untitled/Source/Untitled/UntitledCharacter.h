@@ -49,17 +49,10 @@ public:
 	FName WeaponAttachSocketName;
 
 	UPROPERTY(EditAnywhere)
-	UMaterialInterface* GunMaterial;
-
-	UPROPERTY(EditAnywhere)
 	UMaterialInterface* PlayerMaterial;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Material")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Material")
 	UMaterialInstanceDynamic* PlayerDynamicMaterial;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Material")
-	UMaterialInstanceDynamic* GunDynamicMaterial;
-
 
 protected:
 	virtual void BeginPlay();
