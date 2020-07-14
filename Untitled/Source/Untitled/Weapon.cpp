@@ -48,7 +48,11 @@ void AWeapon::Tick(float DeltaTime)
 
 void AWeapon::SetDynMaterial(UMaterialInterface * Material)
 {
-	MeshComp->SetMaterial(0, Material);
+	if (Material)
+	{
+		MeshComp->SetMaterial(0, Material);
+	}
+	
 }
 
 void AWeapon::Fire()

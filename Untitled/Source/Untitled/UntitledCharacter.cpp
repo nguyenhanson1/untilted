@@ -48,14 +48,18 @@ AUntitledCharacter::AUntitledCharacter()
 	//bUsingMotionControllers = true;
 
 	bInvisible = false;
+	SetReplicates(true);
 
 	WeaponAttachSocketName = "GripPoint";
+
+	NetUpdateFrequency = 66.f;
+	MinNetUpdateFrequency = 33.f;
 }
 
 void AUntitledCharacter::BeginPlay()
 {
 	
-	Super::BeginPlay();
+	
 	
 	if (GetLocalRole() == ROLE_Authority)
 	{
@@ -68,12 +72,13 @@ void AUntitledCharacter::BeginPlay()
 			CurrentWeapon->SetOwner(this);
 			CurrentWeapon->AttachToComponent(Mesh1P, FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponAttachSocketName);
 		}
+
 		
 	}
+	
 	SetupInvisibleMaterial();
 		
-		
-	
+	Super::BeginPlay();
 	
 }
 
@@ -281,7 +286,11 @@ void AUntitledCharacter::SetupInvisibleMaterial()
 	{
 		UMaterialInstanceDynamic* GunDynMaterial = UMaterialInstanceDynamic::Create(GunMaterial, CurrentWeapon);
 		GunDynamicMaterial = GunDynMaterial;
-		CurrentWeapon->SetDynMaterial(GunDynamicMaterial);
+		if (CurrentWeapon)
+		{
+			CurrentWeapon->SetDynMaterial(GunDynamicMaterial);
+		}
+		
 	}
 
 	if (PlayerMaterial)
@@ -307,7 +316,7 @@ bool AUntitledCharacter::ServerSetupInvisibleMaterial_Validate()
 void AUntitledCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
 	DOREPLIFETIME(AUntitledCharacter, CurrentWeapon);
+
 	//DOREPLIFETIME_CONDITION(AWeapon, HitScanTrace, COND_SkipOwner);
 }
