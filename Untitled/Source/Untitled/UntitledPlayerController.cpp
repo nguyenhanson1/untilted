@@ -3,6 +3,9 @@
 
 #include "UntitledPlayerController.h"
 #include "Widgets/PauseMenu.h"
+#include "UntitledCharacter.h"
+#include "UntitledGameMode.h"
+#include "Engine/EngineTypes.h"
 
 void AUntitledPlayerController::BeginPlay()
 {
@@ -66,5 +69,21 @@ void AUntitledPlayerController::TogglePauseMenu()
 	else
 	{
 		DisplayPauseMenu_Implementation();
+	}
+}
+
+void AUntitledPlayerController::OnKilled()
+{
+	UnPossess();
+	GetWorldTimerManager().SetTimer(TimerHandle_Respawn, this, &AUntitledPlayerController::Respawn, 5.f);
+}
+
+void AUntitledPlayerController::Respawn()
+{
+	AUntitledGameMode* GameMode = Cast<AUntitledGameMode>(GetWorld()->GetAuthGameMode());
+	if (GameMode)
+	{
+		APawn* NewPawn = GameMode->SpawnDefaultPawnFor(this, GameMode->ChoosePlayerStart(this));
+		Possess(NewPawn);
 	}
 }

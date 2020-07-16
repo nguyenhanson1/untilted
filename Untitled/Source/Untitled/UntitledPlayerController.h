@@ -13,6 +13,8 @@ UCLASS()
 class UNTITLED_API AUntitledPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+	FTimerHandle TimerHandle_Respawn;
 public:
 	/** Condition and function for the Pause Menu*/
 	bool bPauseMenuVisible;
@@ -31,6 +33,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Widgets")
 	class UPauseMenu* PauseMenu;
+
+	void OnKilled();
+
+	void Respawn();
 
 protected:
 	virtual void BeginPlay() override;
