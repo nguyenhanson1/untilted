@@ -54,27 +54,28 @@ void AUntitledGameMode::PostLogin(APlayerController * NewPlayer)
 		{
 			State->bTeamB = true;
 		}
+		
 	}
 
 }
-
-AActor * AUntitledGameMode::ChoosePlayerStart(AController * Player)
-{
-	if (Player)
-	{
-		AUntitledPlayerState* State = Cast<AUntitledPlayerState>(Player->PlayerState);
-		if (State)
-		{
-			TArray<AUntitledPlayerStart*> Starts;
-			for (TActorIterator<AUntitledPlayerStart> StartItr(GetWorld()); StartItr; ++StartItr)
-			{
-				if (StartItr->bTeamB == State->bTeamB)
-				{
-					Starts.Add(*StartItr);
-				}
-			}
-			return Starts[FMath::RandRange(0, Starts.Num() - 1)];
-		}
-	}
-	return NULL;
-}
+//
+//AActor * AUntitledGameMode::ChoosePlayerStart(AController * Player)
+//{
+//	if (Player)
+//	{
+//		AUntitledPlayerState* State = Cast<AUntitledPlayerState>(Player->PlayerState);
+//		if (State)
+//		{
+//			TArray<AUntitledPlayerStart*> Starts;
+//			for (TActorIterator<AUntitledPlayerStart> StartItr(GetWorld()); StartItr; ++StartItr)
+//			{
+//				if (StartItr->bTeamB == State->bTeamB)
+//				{
+//					Starts.Add(*StartItr);
+//				}
+//			}
+//			return Starts[FMath::RandRange(0, Starts.Num() - 1)];
+//		}
+//	}
+//	return NULL;
+//}

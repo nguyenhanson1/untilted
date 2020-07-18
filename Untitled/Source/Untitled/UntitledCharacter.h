@@ -95,6 +95,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Stealth")
 	void TurnVisible();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	class AUntitledPlayerState* State;
 
 protected:
 	
@@ -157,11 +160,7 @@ public:
 
 	virtual FVector GetPawnViewLocation() const override;
 
-	UFUNCTION()
-	void SetupInvisibleMaterial();
 
 
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerSetupInvisibleMaterial();
 };
 

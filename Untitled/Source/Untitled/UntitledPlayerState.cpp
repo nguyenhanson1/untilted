@@ -5,6 +5,7 @@
 #include "Net/UnrealNetwork.h"
 
 
+
 void AUntitledPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

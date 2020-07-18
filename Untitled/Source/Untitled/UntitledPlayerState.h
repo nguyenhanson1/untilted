@@ -15,6 +15,6 @@ class UNTITLED_API AUntitledPlayerState : public APlayerState
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated,BlueprintReadWrite,VisibleAnywhere)
 	bool bTeamB;
 };

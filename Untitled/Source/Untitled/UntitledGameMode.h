@@ -19,7 +19,7 @@ public:
 
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
-	AActor* ChoosePlayerStart(AController* Player);
+	
 
 
 

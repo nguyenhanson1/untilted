@@ -15,6 +15,8 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "Weapon.h"
 #include "Net/UnrealNetwork.h"
+#include "UntitledPlayerState.h"
+
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -55,6 +57,9 @@ AUntitledCharacter::AUntitledCharacter()
 
 	NetUpdateFrequency = 66.f;
 	MinNetUpdateFrequency = 33.f;
+
+	State = Cast<AUntitledPlayerState>(GetPlayerState());
+	
 }
 
 void AUntitledCharacter::BeginPlay()
@@ -281,28 +286,7 @@ FVector AUntitledCharacter::GetPawnViewLocation() const
 	return Super::GetPawnViewLocation();
 }
 
-void AUntitledCharacter::SetupInvisibleMaterial()
-{
-	if (GetLocalRole() != ENetRole::ROLE_Authority)
-	{
-		ServerSetupInvisibleMaterial();
-	}
 
-
-
-
-
-}
-
-void AUntitledCharacter::ServerSetupInvisibleMaterial_Implementation()
-{
-	SetupInvisibleMaterial();
-}
-
-bool AUntitledCharacter::ServerSetupInvisibleMaterial_Validate()
-{
-	return true;
-}
 
 void AUntitledCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
