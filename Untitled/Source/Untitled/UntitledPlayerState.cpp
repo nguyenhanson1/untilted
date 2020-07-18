@@ -6,10 +6,16 @@
 
 
 
+
 void AUntitledPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AUntitledPlayerState, bTeamB);
 
+}
+
+void AUntitledPlayerState::ChoosePlayerTeam(ETeamState TeamState)
+{
+	UE_LOG(LogTemp, Warning, TEXT("State Chosen"));
 }
