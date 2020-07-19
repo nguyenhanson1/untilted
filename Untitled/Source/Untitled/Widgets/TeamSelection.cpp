@@ -17,7 +17,6 @@ bool UTeamSelection::Initialize() {
 	if (!ensure(TeamBButton != nullptr)) return false;
 	TeamBButton->OnClicked.AddDynamic(this, &UTeamSelection::ChooseTeamB);
 
-	PlayerState = Cast<UPlayerStateInterface>(GetOwningPlayerState());
 
 	return true;
 }
@@ -32,9 +31,6 @@ void UTeamSelection::ChooseTeamB()
 
 }
 
-void UTeamSelection::SetPlayerState(UPlayerStateInterface * StateInterface)
-{
-	
-}
+
 
 

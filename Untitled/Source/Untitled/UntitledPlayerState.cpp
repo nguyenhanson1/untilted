@@ -15,7 +15,3 @@ void AUntitledPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 
 }
 
-void AUntitledPlayerState::ChoosePlayerTeam(ETeamState TeamState)
-{
-	UE_LOG(LogTemp, Warning, TEXT("State Chosen"));
-}

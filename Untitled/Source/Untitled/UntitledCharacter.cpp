@@ -60,6 +60,7 @@ AUntitledCharacter::AUntitledCharacter()
 
 	State = Cast<AUntitledPlayerState>(GetPlayerState());
 	
+	Team = ETeamState::TS_None;
 }
 
 void AUntitledCharacter::BeginPlay()

@@ -6,6 +6,14 @@
 #include "GameFramework/PlayerController.h"
 #include "UntitledPlayerController.generated.h"
 
+UENUM(BlueprintType)
+enum ETeamState
+{
+	TS_None UMETA(DisplayName = "None"),
+	TS_TeamA UMETA(DisplayName = "TeamA"),
+	TS_TeamB UMETA(DisplayName = "TeamB"),
+	TS_MAX UMETA(DisplayName = "MAX")
+};
 /**
  * 
  */

@@ -17,6 +17,6 @@ class UNTITLED_API AUntitledPlayerStart : public APlayerStart
 	
 
 public:
-	UPROPERTY(EditAnywhere, Category=  "Defaults")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=  "Defaults")
 	bool bTeamB;
 };

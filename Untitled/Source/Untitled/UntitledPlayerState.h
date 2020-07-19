@@ -12,7 +12,7 @@
  * 
  */
 UCLASS()
-class UNTITLED_API AUntitledPlayerState : public APlayerState, public IPlayerStateInterface
+class UNTITLED_API AUntitledPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	
@@ -20,8 +20,6 @@ public:
 	UPROPERTY(Replicated,BlueprintReadWrite,VisibleAnywhere)
 	bool bTeamB;
 
-	UFUNCTION()
-	void ChoosePlayerTeam(ETeamState TeamState);
 
 
 };

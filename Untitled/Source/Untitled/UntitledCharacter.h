@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "UntitledPlayerController.h"
 #include "UntitledCharacter.generated.h"
 
 class UInputComponent;
@@ -98,6 +99,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	class AUntitledPlayerState* State;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true), Category = Gameplay)
+	TEnumAsByte<ETeamState> Team;
 
 protected:
 	

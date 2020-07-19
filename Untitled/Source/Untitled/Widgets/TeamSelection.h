@@ -31,5 +31,4 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void ChooseTeamB();
 
-	void SetPlayerState(class UPlayerStateInterface* StateInterface);
 };
