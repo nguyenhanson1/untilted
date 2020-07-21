@@ -17,7 +17,8 @@ void UWidget_Base::SetUp()
 
 	APlayerController* PlayerController = World->GetFirstPlayerController();
 	if (!ensure(PlayerController != nullptr)) return;
-
+	if (!PlayerController->IsLocalPlayerController()) return;
+	
 	FInputModeUIOnly InputModeData;
 	InputModeData.SetWidgetToFocus(this->TakeWidget());
 	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
@@ -37,6 +38,7 @@ void UWidget_Base::TearDown()
 
 	APlayerController* PlayerController = World->GetFirstPlayerController();
 	if (!ensure(PlayerController != nullptr)) return;
+	if (!PlayerController->IsLocalPlayerController()) return;
 
 	FInputModeGameOnly InputModeGame;
 	PlayerController->SetInputMode(InputModeGame);
